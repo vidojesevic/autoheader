@@ -26,6 +26,10 @@ local function author_docblock()
 end
 
 function AutoHeader.setup(user_config)
+	if not AutoHeader.config then
+		error("AutoHeader config is not properly initialized!")
+	end
+
 	user_config = user_config or {}
 	AutoHeader.config = vim.tbl_deep_extend("force", AutoHeader.config, user_config)
 
