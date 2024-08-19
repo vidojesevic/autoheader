@@ -26,12 +26,11 @@ local function author_docblock()
 end
 
 function AutoHeader.setup(user_config)
-	if user_config then
-		AutoHeader.config = vim.tbl_deep_extend("force", AutoHeader.config, user_config)
-	end
+	user_config = user_config or {}
+	AutoHeader.config = vim.tbl_deep_extend("force", AutoHeader.config, user_config)
 
 	vim.api.nvim_create_autocmd("BufNewFile", {
-		pattern = "*." .. user_config.config.extension,
+		pattern = "*." .. AutoHeader.config.extension,
 		callback = function()
 			vim.api.nvim_buf_set_lines(0, 0, 0, false, vim.fn.split(author_docblock(), "\n"))
 		end,
