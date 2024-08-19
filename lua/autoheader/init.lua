@@ -1,4 +1,10 @@
 local AutoHeader = {}
+AutoHeader.config = {
+	extension = "php",
+	name = "Example Author",
+	website = "www.example.com",
+	email = "example@example.com",
+}
 
 local function author_docblock()
 	local date = os.date("%m/%d/%y")
@@ -6,19 +12,26 @@ local function author_docblock()
 		[[
 <?php
 /**
- * @author    Vidoje Šević
- * @website   https://www.vsevic.com
- * @email     vidoje@vsevic.com
+ * @author    %s
+ * @website   %s
+ * @email     %s
  * @date      %s
  */
 ]],
+		AutoHeader.config.name,
+		AutoHeader.config.website,
+		AutoHeader.config.email,
 		date
 	)
 end
 
-function AutoHeader.setup()
+function AutoHeader.setup(user_config)
+	if user_config then
+		AutoHeader.config = vim.tbl_deep_extend("force", AutoHeader.config, user_config)
+	end
+
 	vim.api.nvim_create_autocmd("BufNewFile", {
-		pattern = "*.php",
+		pattern = "*." .. user_config.config.extension,
 		callback = function()
 			vim.api.nvim_buf_set_lines(0, 0, 0, false, vim.fn.split(author_docblock(), "\n"))
 		end,
